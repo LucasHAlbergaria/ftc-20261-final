@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace Parte3
 {
-    public class Turing
+    internal class TURING
     {
         Dictionary<int, char> fita;
         Dictionary<(string, char), (string, char, char)> transicoes;
         int cabecote;
         string estadoAtual;
 
-        public Turing()
+        public TURING()
         {
             fita = new Dictionary<int, char>();
             transicoes = new Dictionary<(string, char), (string, char, char)>();
