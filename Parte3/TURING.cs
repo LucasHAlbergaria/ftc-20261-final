@@ -15,7 +15,7 @@ namespace Parte3
         int cabecote;
         string estadoAtual;
 
-        public MaquinaTuring()
+        public Turing()
         {
             fita = new Dictionary<int, char>();
             transicoes = new Dictionary<(string, char), (string, char, char)>();
@@ -188,8 +188,83 @@ namespace Parte3
             );
         }
 
-        public void Executar(string entrada)
+        public void Simulacao(string entrada)
         {
+            Console.WriteLine($"Entrada: {entrada}");
+
+            // Inicializa fita a partir da entrada
+            fita.Clear();
+            for (int i = 0; i < entrada.Length; i++)
+            {
+                fita[i] = entrada[i];
+            }
+            cabecote = 0;
+            estadoAtual = "q0";
+
+            int passo = 0;
+            const int maxPassos = 10000;
+
+            while (true)
+            {
+                char simboloAtual = fita.ContainsKey(cabecote) ? fita[cabecote] : '_';
+
+                // Exibe estado atual
+                Console.WriteLine($"Estado: {estadoAtual}");
+
+                // Calcula intervalo da fita a ser exibido
+                int minIndex = fita.Count > 0 ? Math.Min(fita.Keys.Min(), cabecote) : cabecote;
+                int maxIndex = fita.Count > 0 ? Math.Max(fita.Keys.Max(), cabecote) : cabecote;
+
+                var sb = new StringBuilder();
+                for (int i = minIndex; i <= maxIndex; i++)
+                {
+                    char s = fita.ContainsKey(i) ? fita[i] : '_';
+                    if (i == cabecote) sb.Append($"[{s}]");
+                    else sb.Append(s);
+                }
+
+                // Exibe conteúdo da fita e posição do cabeçote
+                Console.WriteLine($"Fita: {sb}");
+                Console.WriteLine($"Cabeçote: {cabecote}");
+
+                if (estadoAtual == "qacc" || estadoAtual == "qrej") break;
+
+                var chave = (estadoAtual, simboloAtual);
+                if (!transicoes.TryGetValue(chave, out var trans))
+                {
+                    Console.WriteLine("Sem transição definida — rejeitando.");
+                    estadoAtual = "qrej";
+                    break;
+                }
+
+                var (novoEstado, escrever, direcao) = trans;
+
+                // Escreve símbolo na fita
+                if (escrever == '_')
+                {
+                    if (fita.ContainsKey(cabecote)) fita.Remove(cabecote);
+                }
+                else
+                {
+                    fita[cabecote] = escrever;
+                }
+
+                // Move cabeçote
+                if (direcao == 'D') cabecote++;
+                else if (direcao == 'E') cabecote--;
+
+                // Atualiza estado
+                estadoAtual = novoEstado;
+
+                passo++;
+                if (passo > maxPassos)
+                {
+                    Console.WriteLine("Limite de passos alcançado — abortando.");
+                    break;
+                }
+            }
+
+            Console.WriteLine($"Resultado: {estadoAtual}");
         }
     }
 }
