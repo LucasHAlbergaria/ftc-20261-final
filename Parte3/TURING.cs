@@ -39,11 +39,6 @@ namespace Parte3
             );
 
             transicoes.Add(
-                ("q0", 'Z'),
-                ("q4", 'Z', 'D')
-            );
-
-            transicoes.Add(
                 ("q0", 'b'),
                 ("qrej", 'b', 'D')
             );
@@ -209,6 +204,7 @@ namespace Parte3
                 char simboloAtual = fita.ContainsKey(cabecote) ? fita[cabecote] : '_';
 
                 // Exibe estado atual
+                Console.WriteLine($"Passo: {passo}-------------------------------------------------");
                 Console.WriteLine($"Estado: {estadoAtual}");
 
                 // Calcula intervalo da fita a ser exibido
@@ -222,8 +218,8 @@ namespace Parte3
                     if (i == cabecote) sb.Append($"[{s}]");
                     else sb.Append(s);
                 }
-
                 // Exibe conteúdo da fita e posição do cabeçote
+               
                 Console.WriteLine($"Fita: {sb}");
                 Console.WriteLine($"Cabeçote: {cabecote}");
 
