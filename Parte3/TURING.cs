@@ -17,7 +17,7 @@ namespace Parte3
         Dictionary<(string, char), (string, char, char)> transicoes;
         
         int cabecote; // Posição atual da leitura/escrita na fita
-        string estadoAtual;
+        string estadoAtual = "";
         string estadoInicial;
 
         // Construtor que recebe a tabela de transições já pronta (facilita pra criar máquinas diferentes)

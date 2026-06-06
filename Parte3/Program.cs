@@ -35,7 +35,7 @@ namespace ExecutarTURING
             // 3. (Opcional) Teste interativo que já estava no seu código
             Console.WriteLine("\n\n=== MODO INTERATIVO (L4) ===");
             Console.WriteLine("Digite uma palavra para simular a L4 (ou apenas aperte ENTER para encerrar):");
-            string entrada = Console.ReadLine();
+            string entrada = Console.ReadLine() ?? "";
             
             if (!string.IsNullOrEmpty(entrada))
             {
