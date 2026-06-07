@@ -10,7 +10,7 @@ namespace Parte1
 {
     internal class AFD
     {
-
+        //atributos do AFD
         public HashSet<string> estados;
 
         public HashSet<char> entrada;
@@ -21,7 +21,7 @@ namespace Parte1
 
         public HashSet<string> Final;
 
-
+        //construtor 1: AFD padrão
         public AFD()
         {
             estados = new HashSet<string> { "q0", "q1", "q2", };
@@ -68,12 +68,12 @@ namespace Parte1
             try
             {
                 string jsonContent = File.ReadAllText(caminhoReal);
-                using var doc = JsonDocument.Parse(jsonContent);
-                var root = doc.RootElement;
+                using var doc = JsonDocument.Parse(jsonContent); // parse do JSON para um objeto manipulável
+                var root = doc.RootElement; // raiz do JSON, onde se espera encontrar as chaves principais do AFD
 
                 // estados
                 var estados = new HashSet<string>();
-                if (root.TryGetProperty("estados", out var pEstados) && pEstados.ValueKind == JsonValueKind.Array)
+                if (root.TryGetProperty("estados", out var pEstados) && pEstados.ValueKind == JsonValueKind.Array) //verifica se existe "estados" e se é um array
                 {
                     foreach (var e in pEstados.EnumerateArray())
                         estados.Add(e.GetString() ?? string.Empty);
@@ -81,7 +81,7 @@ namespace Parte1
 
                 // alfabeto / entrada
                 var entrada = new HashSet<char>();
-                if (root.TryGetProperty("alfabeto", out var pAlfabeto) && pAlfabeto.ValueKind == JsonValueKind.Array)
+                if (root.TryGetProperty("alfabeto", out var pAlfabeto) && pAlfabeto.ValueKind == JsonValueKind.Array) //verifica se existe "alfabeto" e se é um array
                 {
                     foreach (var a in pAlfabeto.EnumerateArray())
                     {
@@ -92,36 +92,36 @@ namespace Parte1
 
                 // estado inicial
                 string inicialJson = inicial;
-                if (root.TryGetProperty("estadoInicial", out var pInicial) && pInicial.ValueKind == JsonValueKind.String)
+                if (root.TryGetProperty("estadoInicial", out var pInicial) && pInicial.ValueKind == JsonValueKind.String) //verifica se existe "estadoInicial" e se é uma string
                     inicialJson = pInicial.GetString() ?? inicialJson;
 
                 // estados finais (tenta várias chaves possíveis)
                 var finais = new HashSet<string>();
-                if (root.TryGetProperty("estadoFinal", out var pFinal) && pFinal.ValueKind == JsonValueKind.Array)
+                if (root.TryGetProperty("estadoFinal", out var pFinal) && pFinal.ValueKind == JsonValueKind.Array) //verifica se existe "estadoFinal" e se é um array
                 {
                     foreach (var f in pFinal.EnumerateArray()) finais.Add(f.GetString() ?? string.Empty);
                 }
-                else if (root.TryGetProperty("estadosAceitacao", out var pAce) && pAce.ValueKind == JsonValueKind.Array)
+                else if (root.TryGetProperty("estadosAceitacao", out var pAce) && pAce.ValueKind == JsonValueKind.Array) //verifica se existe "estadosAceitacao" e se é um array
                 {
                     foreach (var f in pAce.EnumerateArray()) finais.Add(f.GetString() ?? string.Empty);
                 }
 
                 // transições: espera array de objetos { de, letra, para }
                 var transicoes = new Dictionary<(string estado, char simbolo), string>();
-                if (root.TryGetProperty("transicoes", out var pTrans) && pTrans.ValueKind == JsonValueKind.Array)
+                if (root.TryGetProperty("transicoes", out var pTrans) && pTrans.ValueKind == JsonValueKind.Array) //verifica se existe "transicoes" e se é um array
                 {
                     foreach (var t in pTrans.EnumerateArray())
                     {
-                        if (!t.TryGetProperty("de", out var pDe) || !t.TryGetProperty("letra", out var pLetra) || !t.TryGetProperty("para", out var pPara))
+                        if (!t.TryGetProperty("de", out var pDe) || !t.TryGetProperty("letra", out var pLetra) || !t.TryGetProperty("para", out var pPara)) // usa "de" e "para" para transições e "letra" para símbolo
                             continue;
 
-                        string de = pDe.GetString() ?? string.Empty;
+                        string de = pDe.GetString() ?? string.Empty; 
                         string letraStr = pLetra.GetString() ?? string.Empty;
                         if (string.IsNullOrEmpty(letraStr)) continue;
                         char simbolo = letraStr[0];
                         string para = pPara.GetString() ?? string.Empty;
 
-                        transicoes[(de, simbolo)] = para;
+                        transicoes[(de, simbolo)] = para; // adiciona a transição ao dicionário
                     }
                 }
 
@@ -143,7 +143,7 @@ namespace Parte1
             foreach (char simbolo in palavra)
             {
 
-                if (!entrada.Contains(simbolo))
+                if (!entrada.Contains(simbolo)) //se simbolo não estiver no alfabeto, rejeita a palavra imediatamente
                 {
                     Console.WriteLine($"Símbolo '{simbolo}' não reconhecido no alfabeto. A palavra é rejeitada.");
                     return false;
@@ -151,12 +151,12 @@ namespace Parte1
 
                 var passoAtual = (estadoAtual, simbolo);
 
-                if (transicoes.ContainsKey(passoAtual))
+                if (transicoes.ContainsKey(passoAtual)) //caso exista uma transição definida para o estado atual e o símbolo lido, segue para o próximo estado
                 {
 
                     estadoAtual = transicoes[passoAtual];
                 }
-                else
+                else // caso contrário, a palavra é rejeitada
                 {
 
                     Console.WriteLine($"Transição indefinida para o estado '{estadoAtual}' com o símbolo '{simbolo}'. Palavra rejeitada.");
@@ -165,12 +165,12 @@ namespace Parte1
             }
 
 
-            if (Final.Contains(estadoAtual))
+            if (Final.Contains(estadoAtual)) //se o estado atual for final, aceito
             {
                 Console.WriteLine($"A palavra '{palavra}' terminou no estado de aceitação '{estadoAtual}'. ACEITA!");
                 return true;
             }
-            else
+            else // caso contrário, rejeitado
             {
                 Console.WriteLine($"A palavra '{palavra}' terminou no estado '{estadoAtual}', que NÃO é de aceitação. REJEITADA!");
                 return false;
@@ -187,31 +187,31 @@ namespace Parte1
             }
 
             string[] linhas = File.ReadAllLines(caminhoArquivo);
-            int numero = 0;
+            int numero = 0; //contador para exibir o número do teste
 
-            foreach (var raw in linhas)
+            foreach (var raw in linhas) //raw = linha original do arquivo, sem alterações
             {
                 numero++;
 
                 if (raw == null) continue;
 
-                string trimmed = raw.Trim();
+                string trimmed = raw.Trim(); //remover espaços em branco no início e no fim da linha
 
 
-                bool isLambda = trimmed.IndexOf("lambda", StringComparison.OrdinalIgnoreCase) >= 0 || trimmed.Contains('λ');
-                string palavra = isLambda || string.IsNullOrEmpty(trimmed) ? string.Empty : trimmed;
+                bool isLambda = trimmed.IndexOf("lambda", StringComparison.OrdinalIgnoreCase) >= 0 || trimmed.Contains('λ'); //verificar se a linha contém "lambda" (ignorando maiúsculas/minúsculas) ou o símbolo grego 'λ'
+                string palavra = isLambda || string.IsNullOrEmpty(trimmed) ? string.Empty : trimmed; //se for uma linha vazia, usar palavra vazia; caso contrário, usar a linha como palavra a ser testada
 
                 if (string.IsNullOrEmpty(trimmed))
                 {
-                    Console.WriteLine($"Teste {numero}: linha vazia -> usando palavra vazia");
+                    Console.WriteLine($"Teste {numero}: linha vazia -> usando palavra vazia"); //caso de linha completamente vazia
                 }
                 else if (isLambda)
                 {
-                    Console.WriteLine($"Teste {numero}: '{raw}' -> tratando como palavra vazia");
+                    Console.WriteLine($"Teste {numero}: '{raw}' -> tratando como palavra vazia"); //caso de linha contendo "lambda" ou 'λ'
                 }
                 else
                 {
-                    Console.WriteLine($"Teste {numero}: '{raw}'");
+                    Console.WriteLine($"Teste {numero}: '{raw}'"); //caso de linha normal
                 }
 
                 AceitarPalavra(palavra);
@@ -222,11 +222,11 @@ namespace Parte1
         public void ExibirAFD()
         {
            
-            string listaEstados = string.Join(", ", estados);
+            string listaEstados = string.Join(", ", estados); //juntar elementos por virgula
             string listaAlfabetos = string.Join(", ", entrada);
 
             Console.WriteLine($"Estados: [{listaEstados}]");
-            Console.WriteLine($"Estados: [{listaAlfabetos}]");
+            Console.WriteLine($"Alfabeto: [{listaAlfabetos}]");
             Console.WriteLine("Transições registradas (Função Delta):");
 
             foreach (var transicao in transicoes)

@@ -20,6 +20,7 @@ namespace ExecutarAFD
             Console.WriteLine("\n=== TESTANDO O DESAFIO (ARQUIVO JSON) ===");
             AFD afdDoJson = meuAfd.Desafio("afd.json");
             afdDoJson.ExibirAFD();
+            afdDoJson.AceitarPalavra("1");
         }
     }
 }
