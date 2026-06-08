@@ -48,5 +48,12 @@ Para rodar qualquer uma das partes, navegue até a pasta do projeto específico 
 
 ---
 
-### Link Video de Defesa
+### 🎥 Video de Defesa
+
+Confira o vídeo demonstrando o funcionamento do projeto:
+
+🔗 https://youtu.be/mE9ew6wenbI
+
+---
+
 
