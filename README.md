@@ -44,7 +44,7 @@ Para rodar qualquer uma das partes, navegue até a pasta do projeto específico 
 
 2. **Inicializar a Parte**
    ```bash
-   dotnet build
+   dotnet run
 
 ---
 
@@ -52,7 +52,7 @@ Para rodar qualquer uma das partes, navegue até a pasta do projeto específico 
 
 Confira o vídeo demonstrando o funcionamento do projeto:
 
-🔗 https://youtu.be/mE9ew6wenbI
+🔗 [https://www.youtube.com/watch?v=zKANEW4bik8](https://youtu.be/zKANEW4bik8)
 
 ---
 
